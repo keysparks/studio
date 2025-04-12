@@ -25,20 +25,20 @@ export default function RevenuesPage() {
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
         <div>
           <Label htmlFor="category" className="font-bold">
-            Category
+            Category<span className="text-red-500">*</span>
           </Label>
-          <Input type="text" id="category" required />
+          <Input type="text" id="category" name="category" required />
         </div>
         <div>
           <Label htmlFor="amount" className="font-bold">
             Amount
           </Label>
-          <Input type="number" id="amount" required />
+          <Input type="number" id="amount"  name="amount" required />
         </div>
         <div>
           <Label htmlFor="date" className="font-bold">
             Date
-          </Label>
+          <span className="text-red-500">*</span></Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -63,7 +63,7 @@ export default function RevenuesPage() {
           </Popover>
         </div>
         <div>
-          <Label htmlFor="username" className="font-bold">Username</Label>
+          <Label htmlFor="username" className="font-bold">Username<span className="text-red-500">*</span></Label>
           <Input type="text" id="username" required />
         </div>
         <Button type="submit">Add Revenue</Button>

@@ -39,7 +39,7 @@ export default function ExpensesPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required />
+              <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required /><span className="text-red-500">*</span>
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Amount</Label>
@@ -48,8 +48,29 @@ export default function ExpensesPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" value={date ? format(date, "yyyy-MM-dd") : ""} disabled required />
+              <Label htmlFor="date">Date</Label>              
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
