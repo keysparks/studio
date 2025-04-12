@@ -1,7 +1,6 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {SidebarProvider} from "@/components/ui/sidebar";
 
 const geistSans = Geist({
@@ -30,12 +29,7 @@ export default function RootLayout({
         <SidebarProvider>
           <div className="relative flex items-center justify-between p-4 bg-background border-b">
             
-            <div className="absolute top-2 right-4">
-              <Avatar>
-                <AvatarImage src="https://picsum.photos/50/50" alt="User Avatar"/>
-                <AvatarFallback>FS</AvatarFallback>
-              </Avatar>
-            </div>
+            
           </div>
           {children}
         </SidebarProvider>
@@ -43,6 +37,5 @@ export default function RootLayout({
     </html>
   );
 }
-
 
 

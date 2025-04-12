@@ -8,7 +8,6 @@ import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
 import {PlusCircle} from "lucide-react";
 import Link from "next/link";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState([{category: 'Groceries', amount: 500}]);
@@ -61,5 +60,6 @@ export default function ExpensesPage() {
     
   );
 }
+
 
 
