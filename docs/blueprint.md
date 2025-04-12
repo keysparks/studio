@@ -19,5 +19,5 @@
 - Subtle animations for transactions and goal tracking updates.
 
 ## Original User Request:
+
 A budgeting and expense tracking app with spending categories, charts and budget goals. Include a clean dashboard with key insights. It should include spending categories, charts, and budget goals
-  
