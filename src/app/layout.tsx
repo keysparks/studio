@@ -27,7 +27,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarProvider>
-          
+          <header className="flex items-center justify-between p-4">
+            <div className="font-bold text-xl">BudgetWise</div>
+            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          </header>
           {children}
         </SidebarProvider>
       </body>
