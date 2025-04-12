@@ -107,6 +107,7 @@ function DashboardOverview() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4">
+       <h1 className="text-2xl font-bold text-center">BudgetWise</h1>
       <Card>
         <CardHeader>
           <CardTitle>Dashboard Overview</CardTitle>
@@ -203,5 +204,6 @@ export default function DashboardPage() {
     
   );
 }
+
 
 
