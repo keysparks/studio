@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -19,7 +19,6 @@ import {
   Legend,
 } from "recharts";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +29,8 @@ import {
 } from "@/components/ui/dialog";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { IndianRupee } from "lucide-react"; // Import the IndianRupee icon
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -48,19 +48,9 @@ type Expense = {
   username?: string;
 };
 
-const initialExpenses = [
-  { category: "Groceries", amount: 500, date: new Date() },
-  { category: "Rent", amount: 1500, date: new Date() },
-  { category: "Utilities", amount: 200, date: new Date() },
-  { category: "Transportation", amount: 300, date: new Date() },
-  { category: "Entertainment", amount: 200, date: new Date() },
-];
-
 function DashboardOverview() {
-  const [revenues, setRevenues] = useState<Revenue[]>([
-    { category: "Salary", amount: 5000, date: new Date() },
-  ]);
-  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
+  const [revenues, setRevenues] = useState<Revenue[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [budgetGoals, setBudgetGoals] = useState([
     { category: "Groceries", amount: 400 },
   ]);
@@ -75,41 +65,100 @@ function DashboardOverview() {
   const [expenseDate, setExpenseDate] = useState<Date | undefined>(new Date());
   const [username, setUsername] = useState("");
 
-  const handleAddRevenue = () => {
-    if (newRevenueCategory && newRevenueAmount !== "" && revenueDate) {
-      setRevenues([
-        ...revenues,
-        {
-          category: newRevenueCategory,
-          amount: parseFloat(newRevenueAmount.toString()),
-          date: revenueDate,
-          username: username,
-        },
-      ]);
-      setNewRevenueCategory("");
-      setNewRevenueAmount("");
-      setRevenueDate(undefined);
-      setUsername("");
-      setOpenRevenueDialog(false);
+  const handleAddRevenue = async () => {
+    if (newRevenueCategory && newRevenueAmount !== "" && revenueDate && username) {
+      try {
+        const response = await fetch("/api/revenues", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            category: newRevenueCategory,
+            amount: parseFloat(newRevenueAmount.toString()),
+            date: revenueDate,
+            username: username,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add revenue");
+        }
+
+        const newRevenue = await response.json();
+        setRevenues([...revenues, newRevenue]); // Assuming API returns the added revenue
+        setNewRevenueCategory("");
+        setNewRevenueAmount("");
+        setRevenueDate(undefined);
+        setUsername("");
+        setOpenRevenueDialog(false);
+
+        toast({
+          title: "Revenue Added",
+          description: "Your revenue has been successfully added.",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Please fill in all revenue details.",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleAddExpense = () => {
-    if (newExpenseCategory && newExpenseAmount !== "" && expenseDate) {
-      setExpenses([
-        ...expenses,
-        {
-          category: newExpenseCategory,
-          amount: parseFloat(newExpenseAmount.toString()),
-          date: expenseDate,
-          username: username,
-        },
-      ]);
-      setNewExpenseCategory("");
-      setNewExpenseAmount("");
-      setExpenseDate(undefined);
-      setUsername("");
-      setOpenExpenseDialog(false);
+
+  const handleAddExpense = async () => {
+    if (newExpenseCategory && newExpenseAmount !== "" && expenseDate && username) {
+      try {
+        const response = await fetch("/api/expenses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            category: newExpenseCategory,
+            amount: parseFloat(newExpenseAmount.toString()),
+            date: expenseDate,
+            username: username,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add expense");
+        }
+
+        const newExpense = await response.json();
+        setExpenses([...expenses, newExpense]); // Assuming API returns the added expense
+        setNewExpenseCategory("");
+        setNewExpenseAmount("");
+        setExpenseDate(undefined);
+        setUsername("");
+        setOpenExpenseDialog(false);
+
+        toast({
+          title: "Expense Added",
+          description: "Your expense has been successfully added.",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Please fill in all expense details.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -138,15 +187,39 @@ function DashboardOverview() {
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label>Income</Label>
-            <Input type="number" value={totalIncome} readOnly />
+            <div className="relative">
+              <IndianRupee className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="number"
+                value={totalIncome}
+                readOnly
+                className="pl-8"
+              />
+            </div>
           </div>
           <div>
             <Label>Total Expenses</Label>
-            <Input type="number" value={totalExpenses} readOnly />
+            <div className="relative">
+              <IndianRupee className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="number"
+                value={totalExpenses}
+                readOnly
+                className="pl-8"
+              />
+            </div>
           </div>
           <div>
             <Label>Remaining Budget</Label>
-            <Input type="number" value={remainingBudget} readOnly />
+            <div className="relative">
+              <IndianRupee className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="number"
+                value={remainingBudget}
+                readOnly
+                className="pl-8"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -174,167 +247,168 @@ function DashboardOverview() {
                   />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                formatter={(value: number) => (
+                  <>
+                    <IndianRupee className="mr-1 inline-block h-3 w-3" />
+                    {value.toLocaleString()}
+                  </>
+                )}
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
-
-          <CardContent>
-            <div className="flex justify-around">
-              <Dialog
-                open={openRevenueDialog}
-                onOpenChange={setOpenRevenueDialog}
-              >
-                <DialogTrigger asChild>
-                  <Button variant="default">Add Revenue</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Revenue</DialogTitle>
-                    <DialogDescription>
-                      Enter the details for the new revenue.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="revenue-username" className="text-right">
-                        User Name
-                      </Label>
-                      <Input
-                        type="text"
-                        id="revenue-username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="revenue-category" className="text-right">
-                        Category
-                      </Label>
-                      <Input
-                        type="text"
-                        id="revenue-category"
-                        value={newRevenueCategory}
-                        onChange={(e) => setNewRevenueCategory(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="revenue-amount" className="text-right">
-                        Amount
-                      </Label>
-                      <Input
-                        type="number"
-                        id="revenue-amount"
-                        value={newRevenueAmount}
-                        onChange={(e) =>
-                          setNewRevenueAmount(
-                            e.target.value === ""
-                              ? ""
-                              : parseFloat(e.target.value),
-                          )
-                        }
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="revenue-date" className="text-right">
-                        Date
-                      </Label>
-                      <DatePicker
-                        id="revenue-date"
-                        selected={revenueDate}
-                        onSelect={setRevenueDate}
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" onClick={handleAddRevenue}>
-                    Add Revenue
-                  </Button>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog
-                open={openExpenseDialog}
-                onOpenChange={setOpenExpenseDialog}
-              >
-                <DialogTrigger asChild>
-                  <Button variant="default">Add Expense</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Expense</DialogTitle>
-                    <DialogDescription>
-                      Enter the details for the new expense.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="expense-username" className="text-right">
-                        User Name
-                      </Label>
-                      <Input
-                        type="text"
-                        id="expense-username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="expense-category" className="text-right">
-                        Category
-                      </Label>
-                      <Input
-                        type="text"
-                        id="expense-category"
-                        value={newExpenseCategory}
-                        onChange={(e) => setNewExpenseCategory(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="expense-amount" className="text-right">
-                        Amount
-                      </Label>
-                      <Input
-                        type="number"
-                        id="expense-amount"
-                        value={newExpenseAmount}
-                        onChange={(e) =>
-                          setNewExpenseAmount(
-                            e.target.value === ""
-                              ? ""
-                              : parseFloat(e.target.value),
-                          )
-                        }
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="expense-date" className="text-right">
-                        Date
-                      </Label>
-                      <DatePicker
-                        id="expense-date"
-                        selected={expenseDate}
-                        onSelect={setExpenseDate}
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" onClick={handleAddExpense}>
-                    Add Expense
-                  </Button>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </CardContent>
         </Card>
+      </div>
+
+      <div className="flex justify-around">
+        <Dialog open={openRevenueDialog} onOpenChange={setOpenRevenueDialog}>
+          <DialogTrigger asChild>
+            <Button variant="default" style={{ backgroundColor: "#008080", color: "white" }}>Add Revenue</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Revenue</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new revenue.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="revenue-username" className="text-right">
+                  User Name
+                </Label>
+                <Input
+                  type="text"
+                  id="revenue-username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="revenue-category" className="text-right">
+                  Category
+                </Label>
+                <Input
+                  type="text"
+                  id="revenue-category"
+                  value={newRevenueCategory}
+                  onChange={(e) => setNewRevenueCategory(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="revenue-amount" className="text-right">
+                  Amount
+                </Label>
+                <div className="relative col-span-3">
+                  <IndianRupee className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="number"
+                    id="revenue-amount"
+                    value={newRevenueAmount}
+                    onChange={(e) =>
+                      setNewRevenueAmount(
+                        e.target.value === "" ? "" : parseFloat(e.target.value),
+                      )
+                    }
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="revenue-date" className="text-right">
+                  Date
+                </Label>
+                <DatePicker
+                  id="revenue-date"
+                  selected={revenueDate}
+                  onSelect={setRevenueDate}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <Button type="submit" onClick={handleAddRevenue}>
+              Add Revenue
+            </Button>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openExpenseDialog} onOpenChange={setOpenExpenseDialog}>
+          <DialogTrigger asChild>
+            <Button variant="default" style={{ backgroundColor: "#008080", color: "white" }}>Add Expense</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Expense</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new expense.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="expense-username" className="text-right">
+                  User Name
+                </Label>
+                <Input
+                  type="text"
+                  id="expense-username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="expense-category" className="text-right">
+                  Category
+                </Label>
+                <Input
+                  type="text"
+                  id="expense-category"
+                  value={newExpenseCategory}
+                  onChange={(e) => setNewExpenseCategory(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="expense-amount" className="text-right">
+                  Amount
+                </Label>
+                <div className="relative col-span-3">
+                  <IndianRupee className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="number"
+                    id="expense-amount"
+                    value={newExpenseAmount}
+                    onChange={(e) =>
+                      setNewExpenseAmount(
+                        e.target.value === "" ? "" : parseFloat(e.target.value),
+                      )
+                    }
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="expense-date" className="text-right">
+                  Date
+                </Label>
+                <DatePicker
+                  id="expense-date"
+                  selected={expenseDate}
+                  onSelect={setExpenseDate}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <Button type="submit" onClick={handleAddExpense}>
+              Add Expense
+            </Button>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
@@ -343,3 +417,4 @@ function DashboardOverview() {
 export default function DashboardPage() {
   return <DashboardOverview />;
 }
+"

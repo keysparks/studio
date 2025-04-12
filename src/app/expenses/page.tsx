@@ -1,85 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
-import { CalendarIcon } from "@radix-ui/react-icons";
+import { DataTable } from "@/components/ui/DataTable";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface Expense {
+  category: string;  amount: number; // Change to number
+  date: Date; // Change to Date
+  username: string;
+}
 
 export default function ExpensesPage() {
-  const [category, setCategory] = useState("");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState<Date>();
-  const [username, setUsername] = useState("");
+  const [data, setData] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission logic here
-    console.log({ category, amount, date, username });
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/expenses");
+        if (!response.ok) {
+          throw new Error("Failed to fetch expenses");
+        }
+        const jsonData: Expense[] = (await response.json()).map((item: any) => ({
+          category: item.category,
+          amount: item.amount,
+          date: new Date(item.date), // Parse date string to Date object
+          username: item.username,
+        }));
+
+
+
+        setData(jsonData);
+      } catch (err: any) {        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const columns: ColumnDef<Expense>[] = [
+    { accessorKey: "category", header: "Category" },
+    { accessorKey: "amount", header: "Amount" },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => format(new Date(row.getValue("date")), "PPP"),
+    },
+    { accessorKey: "username", header: "Username" },
+  ];
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Add Expense</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required /><span className="text-red-500">*</span>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="amount">Amount</Label>
-              <Input id="amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} required />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>              
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !date && "text-muted-foreground"
-                      )}
-                    >
-                      {date ? format(date, "PPP") : <span>Pick a date</span>}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            </div>
-          </div>
-          <Button type="submit">Add Expense</Button>
-        </form>
-      </CardContent>
+      {loading ? (
+        <p>Loading expenses...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : (
+        <DataTable columns={columns} data={data} />
+      )}
     </Card>
   );
 }

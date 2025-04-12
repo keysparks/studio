@@ -1,73 +1,59 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon } from "@radix-ui/react-icons";
+import { DataTable } from "@/components/ui/DataTable";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface Revenue {
+  category: string;
+  amount: number; // Change to number
+  date: string;
+  username: string;
+}
 
 export default function RevenuesPage() {
-  const [date, setDate] = React.useState<Date>();
+  const [data, setData] = useState<Revenue[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted");
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/revenues");
+        if (!response.ok) {
+          throw new Error("Failed to fetch revenues");
+        }
+        const jsonData: Revenue[] = (await response.json()).map((item: any) => ({
+          category: item.category,
+          amount: item.amount,
+          date: new Date(item.date), // Parse date string to Date object
+          username: item.username,
+        }));
+
+
+        setData(jsonData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const columns: ColumnDef<Revenue>[] = [
+    { accessorKey: "category", header: "Category" },
+    { accessorKey: "amount", header: "Amount" },
+    { accessorKey: "date", header: "Date", cell: ({ row }) => format(new Date(row.getValue("date")), "PPP") },
+    { accessorKey: "username", header: "Username" },
+  ];
 
   return (
     <Card>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <div>
-          <Label htmlFor="category" className="font-bold">
-            Category<span className="text-red-500">*</span>
-          </Label>
-          <Input type="text" id="category" name="category" required />
-        </div>
-        <div>
-          <Label htmlFor="amount" className="font-bold">
-            Amount
-          </Label>
-          <Input type="number" id="amount"  name="amount" required />
-        </div>
-        <div>
-          <Label htmlFor="date" className="font-bold">
-            Date
-          <span className="text-red-500">*</span></Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] pl-3 text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div>
-          <Label htmlFor="username" className="font-bold">Username<span className="text-red-500">*</span></Label>
-          <Input type="text" id="username" required />
-        </div>
-        <Button type="submit">Add Revenue</Button>
-      </form>
+      {loading ? (<p>Loading revenues...</p>) : error ? (<p>Error: {error}</p>) : (<DataTable columns={columns} data={data} />)}
     </Card>
   );
 }

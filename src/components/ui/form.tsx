@@ -12,7 +12,6 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
 const Form = FormProvider;
@@ -81,7 +80,7 @@ const FormItem = React.forwardRef<
   return (
     <FormItemContext.Provider value={{ id }}>
       <div ref={ref} className={cn("space-y-2", className)} {...props} />
-    </FormItemContext.Provider>
+    </FormItemContext.Provider>  
   );
 });
 FormItem.displayName = "FormItem";
@@ -95,7 +94,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(error && "text-destructive", className)}    
       htmlFor={formItemId}
       {...props}
     />
