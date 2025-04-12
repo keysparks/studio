@@ -43,7 +43,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ selected, onSelect, className, 
           mode="single"
           selected={selected}
           onSelect={onSelect}
-          disabled={{}}
+          disabled={undefined}
           initialFocus
         />
       </PopoverContent>

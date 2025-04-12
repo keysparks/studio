@@ -22,6 +22,20 @@ import {cn} from "@/lib/utils";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
+type Revenue = {
+  category: string;
+  amount: number;
+  date: Date;
+  username?: string;
+};
+
+type Expense = {
+  category: string;
+  amount: number;
+  date: Date;
+  username?: string;
+};
+
 const initialExpenses = [
   {category: 'Groceries', amount: 500, date: new Date()},
   {category: 'Rent', amount: 1500, date: new Date()},
@@ -31,8 +45,8 @@ const initialExpenses = [
 ];
 
 function DashboardOverview() {
-  const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000, date: new Date()}]);
-  const [expenses, setExpenses] = useState(initialExpenses);
+  const [revenues, setRevenues] = useState<Revenue[]>([{category: 'Salary', amount: 5000, date: new Date()}]);
+  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [budgetGoals, setBudgetGoals] = useState([{category: 'Groceries', amount: 400}]);
   const {toast} = useToast();
   const [openRevenueDialog, setOpenRevenueDialog] = useState(false);
