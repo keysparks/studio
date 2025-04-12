@@ -37,6 +37,7 @@ const initialExpenses = [
 
 export default function Home() {
   const [income, setIncome] = useState(5000);
+  const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
   const [expenses, setExpenses] = useState(initialExpenses);
   const [category, setCategory] = useState('');
   const [amount, setAmount] = useState(0);
@@ -52,6 +53,14 @@ export default function Home() {
     }
   };
 
+  const handleAddRevenue = () => {
+    if (category && amount > 0) {
+      setRevenues([...revenues, {category, amount: parseFloat(amount.toString())}]);
+      setCategory('');
+      setAmount(0);
+    }
+  };
+
   const handleAddBudgetGoal = () => {
     if (category && amount > 0) {
       setBudgetGoals([...budgetGoals, {category, amount: parseFloat(amount.toString())}]);
@@ -62,8 +71,9 @@ export default function Home() {
 
   const generateInsights = async () => {
     try {
+      const totalIncome = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
       const input = {
-        income: parseFloat(income.toString()),
+        income: parseFloat(totalIncome.toString()),
         expenses: expenses,
         budgetGoals: budgetGoals,
       };
@@ -84,7 +94,8 @@ export default function Home() {
   };
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const remainingBudget = income - totalExpenses;
+  const totalIncome = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
+  const remainingBudget = totalIncome - totalExpenses;
 
   const pieChartData = expenses.map((expense, index) => ({
     name: expense.category,
@@ -104,8 +115,8 @@ export default function Home() {
             <Label>Income</Label>
             <Input
               type="number"
-              value={income}
-              onChange={e => setIncome(parseFloat(e.target.value))}
+              value={totalIncome}
+              readOnly
             />
           </div>
           <div>
@@ -185,6 +196,40 @@ export default function Home() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Revenues</CardTitle>
+          <CardDescription>Categorize and track your revenues.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-2">
+            <Label>Category</Label>
+            <Input
+              type="text"
+              placeholder="e.g., Salary"
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+            />
+            <Label>Amount</Label>
+            <Input
+              type="number"
+              placeholder="e.g., 5000"
+              value={amount}
+              onChange={e => setAmount(parseFloat(e.target.value))}
+            />
+            <Button onClick={handleAddRevenue}>Add Revenue</Button>
+          </div>
+          <ul className="mt-4">
+            {revenues.map((revenue, index) => (
+              <li key={index} className="flex justify-between items-center py-2 border-b">
+                <span>{revenue.category}</span>
+                <span>₹{revenue.amount}</span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

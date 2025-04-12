@@ -22,6 +22,14 @@ const SpendingInsightsInputSchema = z.object({
       })
     )
     .describe('A list of expenses with their categories and amounts.'),
+    revenues: z
+    .array(
+      z.object({
+        category: z.string().describe('The category of the revenue.'),
+        amount: z.number().describe('The amount received from the revenue source.'),
+      })
+    )
+    .describe('A list of revenue sources with their categories and amounts.'),
   budgetGoals: z
     .array(
       z.object({
@@ -59,6 +67,14 @@ const spendingInsightsPrompt = ai.definePrompt({
           })
         )
         .describe('A list of expenses with their categories and amounts.'),
+        revenues: z
+        .array(
+          z.object({
+            category: z.string().describe('The category of the revenue.'),
+            amount: z.number().describe('The amount received from the revenue source.'),
+          })
+        )
+        .describe('A list of revenue sources with their categories and amounts.'),
       budgetGoals: z
         .array(
           z.object({
@@ -82,6 +98,11 @@ Income: {{{income}}}
 
 Expenses:
 {{#each expenses}}
+- Category: {{{category}}}, Amount: {{{amount}}}
+{{/each}}
+
+Revenues:
+{{#each revenues}}
 - Category: {{{category}}}, Amount: {{{amount}}}
 {{/each}}
 
