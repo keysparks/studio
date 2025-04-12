@@ -2,7 +2,6 @@ import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import {SidebarProvider} from "@/components/ui/sidebar";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,17 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarProvider>
-          <div className="relative flex items-center justify-between p-4 bg-background border-b">
-            <span className="font-bold text-lg">BudgetWise</span>
-            <Avatar className="w-8 h-8">
-              <AvatarImage src="https://picsum.photos/id/11/100/100" alt="User Avatar"/>
-              <AvatarFallback>BW</AvatarFallback>
-            </Avatar>
-            
-          </div>
+          
           {children}
         </SidebarProvider>
       </body>
     </html>
   );
 }
+
