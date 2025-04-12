@@ -5,7 +5,6 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {
   BarChart,
   Bar,
@@ -24,6 +23,20 @@ import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/hooks/use-toast';
 import {getSpendingInsights} from '@/ai/flows/spending-insights';
 import {Slider} from '@/components/ui/slider';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import {Home, PlusCircle} from "lucide-react";
+import Link from "next/link";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -35,7 +48,7 @@ const initialExpenses = [
   {category: 'Entertainment', amount: 200},
 ];
 
-export default function Home() {
+function DashboardOverview() {
   const [income, setIncome] = useState(5000);
   const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
   const [expenses, setExpenses] = useState(initialExpenses);
@@ -75,6 +88,7 @@ export default function Home() {
       const input = {
         income: parseFloat(totalIncome.toString()),
         expenses: expenses,
+        revenues: revenues,
         budgetGoals: budgetGoals,
       };
       const result = await getSpendingInsights(input);
@@ -164,123 +178,62 @@ export default function Home() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Expenses</CardTitle>
-            <CardDescription>Categorize and track your expenses.</CardDescription>
+            <CardTitle>AI Spending Insights</CardTitle>
+            <CardDescription>Get personalized insights based on your spending patterns.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-2">
-              <Label>Category</Label>
-              <Input
-                type="text"
-                placeholder="e.g., Groceries"
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-              />
-              <Label>Amount</Label>
-              <Input
-                type="number"
-                placeholder="e.g., 50"
-                value={amount}
-                onChange={e => setAmount(parseFloat(e.target.value))}
-              />
-              <Button onClick={handleAddExpense}>Add Expense</Button>
-            </div>
-            <ul className="mt-4">
-              {expenses.map((expense, index) => (
-                <li key={index} className="flex justify-between items-center py-2 border-b">
-                  <span>{expense.category}</span>
-                  <span>₹{expense.amount}</span>
-                </li>
-              ))}
-            </ul>
+            <Button onClick={generateInsights}>Generate Insights</Button>
+            {insights.length > 0 && (
+              <ul className="mt-4">
+                {insights.map((insight, index) => (
+                  <li key={index} className="py-2 border-b">{insight}</li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Revenues</CardTitle>
-          <CardDescription>Categorize and track your revenues.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-2">
-            <Label>Category</Label>
-            <Input
-              type="text"
-              placeholder="e.g., Salary"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-            />
-            <Label>Amount</Label>
-            <Input
-              type="number"
-              placeholder="e.g., 5000"
-              value={amount}
-              onChange={e => setAmount(parseFloat(e.target.value))}
-            />
-            <Button onClick={handleAddRevenue}>Add Revenue</Button>
-          </div>
-          <ul className="mt-4">
-            {revenues.map((revenue, index) => (
-              <li key={index} className="flex justify-between items-center py-2 border-b">
-                <span>{revenue.category}</span>
-                <span>₹{revenue.amount}</span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Budget Goals</CardTitle>
-          <CardDescription>Set and track your budget goals.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-2">
-            <Label>Category</Label>
-            <Input
-              type="text"
-              placeholder="e.g., Groceries"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-            />
-            <Label>Amount</Label>
-            <Input
-              type="number"
-              placeholder="e.g., 400"
-              value={amount}
-              onChange={e => setAmount(parseFloat(e.target.value))}
-            />
-            <Button onClick={handleAddBudgetGoal}>Add Budget Goal</Button>
-          </div>
-          <ul className="mt-4">
-            {budgetGoals.map((goal, index) => (
-              <li key={index} className="flex justify-between items-center py-2 border-b">
-                <span>{goal.category}</span>
-                <span>₹{goal.amount}</span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>AI Spending Insights</CardTitle>
-          <CardDescription>Get personalized insights based on your spending patterns.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={generateInsights}>Generate Insights</Button>
-          {insights.length > 0 && (
-            <ul className="mt-4">
-              {insights.map((insight, index) => (
-                <li key={index} className="py-2 border-b">{insight}</li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+export default function DashboardPage() {
+  return (
+    <div className="flex h-full">
+      <Sidebar>
+        <SidebarHeader>
+          <SidebarTrigger/>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <Link href="/" className="w-full">
+                <SidebarMenuButton>
+                  <Home className="mr-2 h-4 w-4"/>
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link href="/revenues" className="w-full">
+                <SidebarMenuButton>
+                  <PlusCircle className="mr-2 h-4 w-4"/>
+                  <span>Add Revenue</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link href="/expenses" className="w-full">
+                <SidebarMenuButton>
+                  <PlusCircle className="mr-2 h-4 w-4"/>
+                  <span>Add Expense</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+      <DashboardOverview/>
     </div>
   );
 }
