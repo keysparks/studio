@@ -1,1 +1,1 @@
-import '@/ai/flows/spending-insights.ts';
+// Empty file as there are no GenAI features being used.

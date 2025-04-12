@@ -65,31 +65,6 @@ function DashboardOverview() {
     }
   };
 
-  const generateInsights = async () => {
-    try {
-      const totalIncome = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
-      const input = {
-        income: parseFloat(totalIncome.toString()),
-        expenses: expenses,
-        revenues: revenues,
-        budgetGoals: budgetGoals,
-      };
-      const result = await getSpendingInsights(input);
-      setInsights(result.insights);
-      toast({
-        title: 'AI Insights Generated',
-        description: 'Check the insights section for personalized suggestions.',
-      });
-    } catch (error: any) {
-      console.error('Error generating insights:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to generate AI insights. Please try again.',
-      });
-    }
-  };
-
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const totalIncome = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
   const remainingBudget = totalIncome - totalExpenses;
@@ -102,7 +77,7 @@ function DashboardOverview() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4">
-      <h1 className="text-2xl font-bold text-center">BudgetWise</h1>
+      
       <Card>
         <CardHeader>
           <CardDescription>A summary of your financial status.</CardDescription>
@@ -238,20 +213,7 @@ function DashboardOverview() {
           </CardContent>
         </Card>
 
-        <Card>
-          
-          
-          
-            <Button onClick={generateInsights}>Generate Insights</Button>
-            {insights.length > 0 && (
-              <ul className="mt-4">
-                {insights.map((insight, index) => (
-                  <li key={index} className="py-2 border-b">{insight}</li>
-                ))}
-              </ul>
-            )}
-          
-        </Card>
+        
       </div>
     </div>
   );
@@ -265,3 +227,4 @@ export default function DashboardPage() {
     
   );
 }
+

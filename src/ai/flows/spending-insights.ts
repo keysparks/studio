@@ -1,4 +1,3 @@
-// Using server directive.
 'use server';
 
 /**
