@@ -15,24 +15,25 @@ import {
 } from 'recharts';
 import {Separator} from '@/components/ui/separator';
 import {useToast} from '@/hooks/use-toast';
-import {getSpendingInsights} from '@/ai/flows/spending-insights';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {Calendar} from "@/components/ui/calendar";
+import {format} from "date-fns";
+import {cn} from "@/lib/utils";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const initialExpenses = [
-  {category: 'Groceries', amount: 500},
-  {category: 'Rent', amount: 1500},
-  {category: 'Utilities', amount: 200},
-  {category: 'Transportation', amount: 300},
-  {category: 'Entertainment', amount: 200},
+  {category: 'Groceries', amount: 500, date: new Date()},
+  {category: 'Rent', amount: 1500, date: new Date()},
+  {category: 'Utilities', amount: 200, date: new Date()},
+  {category: 'Transportation', amount: 300, date: new Date()},
+  {category: 'Entertainment', amount: 200, date: new Date()},
 ];
 
 function DashboardOverview() {
-  const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
+  const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000, date: new Date()}]);
   const [expenses, setExpenses] = useState(initialExpenses);
   const [budgetGoals, setBudgetGoals] = useState([{category: 'Groceries', amount: 400}]);
-  const [insights, setInsights] = useState<string[]>([]);
   const {toast} = useToast();
   const [openRevenueDialog, setOpenRevenueDialog] = useState(false);
   const [openExpenseDialog, setOpenExpenseDialog] = useState(false);
@@ -40,27 +41,38 @@ function DashboardOverview() {
   const [newRevenueAmount, setNewRevenueAmount] = useState<number | ''>('');
   const [newExpenseCategory, setNewExpenseCategory] = useState('');
   const [newExpenseAmount, setNewExpenseAmount] = useState<number | ''>('');
+  const [revenueDate, setRevenueDate] = useState<Date | undefined>(new Date());
+  const [expenseDate, setExpenseDate] = useState<Date | undefined>(new Date());
+  const [username, setUsername] = useState('');
 
   const handleAddRevenue = () => {
-    if (newRevenueCategory && newRevenueAmount !== '') {
+    if (newRevenueCategory && newRevenueAmount !== '' && revenueDate) {
       setRevenues([...revenues, {
         category: newRevenueCategory,
         amount: parseFloat(newRevenueAmount.toString()),
+        date: revenueDate,
+        username: username,
       }]);
       setNewRevenueCategory('');
       setNewRevenueAmount('');
+      setRevenueDate(undefined);
+      setUsername('');
       setOpenRevenueDialog(false);
     }
   };
 
   const handleAddExpense = () => {
-    if (newExpenseCategory && newExpenseAmount !== '') {
+    if (newExpenseCategory && newExpenseAmount !== '' && expenseDate) {
       setExpenses([...expenses, {
         category: newExpenseCategory,
         amount: parseFloat(newExpenseAmount.toString()),
+        date: expenseDate,
+        username: username,
       }]);
       setNewExpenseCategory('');
       setNewExpenseAmount('');
+      setExpenseDate(undefined);
+      setUsername('');
       setOpenExpenseDialog(false);
     }
   };
@@ -77,7 +89,6 @@ function DashboardOverview() {
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4">
-      
       <Card>
         <CardHeader>
           <CardDescription>A summary of your financial status.</CardDescription>
@@ -142,6 +153,20 @@ function DashboardOverview() {
                     <DialogDescription>Enter the details for the new revenue.</DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="revenue-username" className="text-right">
+                        User Name
+                      </Label>
+                      <Input
+                        type="text"
+                        id="revenue-username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="revenue-category" className="text-right">
                         Category
@@ -166,6 +191,18 @@ function DashboardOverview() {
                         className="col-span-3"
                       />
                     </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="revenue-date" className="text-right">
+                          Date
+                        </Label>
+                        <Calendar
+                          id="revenue-date"
+                          mode="single"
+                          selected={revenueDate}
+                          onSelect={setRevenueDate}
+                          className="col-span-3"
+                        />
+                      </div>
                   </div>
                   <Button type="submit" onClick={handleAddRevenue}>Add Revenue</Button>
                 </DialogContent>
@@ -181,6 +218,20 @@ function DashboardOverview() {
                     <DialogDescription>Enter the details for the new expense.</DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="expense-username" className="text-right">
+                        User Name
+                      </Label>
+                      <Input
+                        type="text"
+                        id="expense-username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="expense-category" className="text-right">
                         Category
@@ -202,6 +253,18 @@ function DashboardOverview() {
                         id="expense-amount"
                         value={newExpenseAmount}
                         onChange={e => setNewExpenseAmount(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="expense-date" className="text-right">
+                        Date
+                      </Label>
+                      <Calendar
+                        id="expense-date"
+                        mode="single"
+                        selected={expenseDate}
+                        onSelect={setExpenseDate}
                         className="col-span-3"
                       />
                     </div>
@@ -227,4 +290,3 @@ export default function DashboardPage() {
     
   );
 }
-
