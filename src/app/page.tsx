@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/sidebar";
 import {Home, PlusCircle} from "lucide-react";
 import Link from "next/link";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -237,3 +238,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
