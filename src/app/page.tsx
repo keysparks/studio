@@ -23,18 +23,6 @@ import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/hooks/use-toast';
 import {getSpendingInsights} from '@/ai/flows/spending-insights';
 import {Slider} from '@/components/ui/slider';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import {Home, PlusCircle} from "lucide-react";
 import Link from "next/link";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -216,4 +204,5 @@ export default function DashboardPage() {
     
   );
 }
+
 
