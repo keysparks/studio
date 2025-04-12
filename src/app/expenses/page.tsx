@@ -23,40 +23,34 @@ export default function ExpensesPage() {
   };
 
   return (
-    
-      
-      
-      
-        
-          
-            
-              <Label>Category</Label>
-              <Input
-                type="text"
-                placeholder="e.g., Groceries"
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-              />
-              <Label>Amount</Label>
-              <Input
-                type="number"
-                placeholder="e.g., 50"
-                value={amount.toString()}
-                onChange={e => setAmount(parseFloat(e.target.value))}
-              />
-              <Button onClick={handleAddExpense}>Add Expense</Button>
-            
-            
-              {expenses.map((expense, index) => (
-                <li key={index} className="flex justify-between items-center py-2 border-b">
-                  <span>{expense.category}</span>
-                  <span>₹{expense.amount}</span>
-                </li>
-              ))}
-            
-          
-        
-      
-    
+    <Card>
+      <div className="flex flex-col space-y-4">
+        <Label>Category</Label>
+        <Input
+          type="text"
+          placeholder="e.g., Groceries"
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+        />
+        <Label>Amount</Label>
+        <Input
+          type="number"
+          placeholder="e.g., 50"
+          value={amount.toString()}
+          onChange={e => setAmount(parseFloat(e.target.value))}
+        />
+        <Button onClick={handleAddExpense}>Add Expense</Button>
+      </div>
+      <div className="mt-4">
+        <ul>
+          {expenses.map((expense, index) => (
+            <li key={index} className="flex justify-between items-center py-2 border-b">
+              <span>{expense.category}</span>
+              <span>₹{expense.amount}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Card>
   );
 }

@@ -6,8 +6,8 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
-import {PlusCircle} from "lucide-react";
-import Link from "next/link";
+import {PlusCircle} from 'lucide-react';
+import Link from 'next/link';
 
 export default function RevenuesPage() {
   const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
@@ -23,40 +23,34 @@ export default function RevenuesPage() {
   };
 
   return (
-    
-      
-      
-      
-        
-          
-            
-              <Label>Category</Label>
-              <Input
-                type="text"
-                placeholder="e.g., Salary"
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-              />
-              <Label>Amount</Label>
-              <Input
-                type="number"
-                placeholder="e.g., 5000"
-                value={amount.toString()}
-                onChange={e => setAmount(parseFloat(e.target.value))}
-              />
-              <Button onClick={handleAddRevenue}>Add Revenue</Button>
-            
-            
-              {revenues.map((revenue, index) => (
-                <li key={index} className="flex justify-between items-center py-2 border-b">
-                  <span>{revenue.category}</span>
-                  <span>₹{revenue.amount}</span>
-                </li>
-              ))}
-            
-          
-        
-      
-    
+    <Card>
+      <div className="flex flex-col space-y-4">
+        <Label>Category</Label>
+        <Input
+          type="text"
+          placeholder="e.g., Salary"
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+        />
+        <Label>Amount</Label>
+        <Input
+          type="number"
+          placeholder="e.g., 5000"
+          value={amount.toString()}
+          onChange={e => setAmount(parseFloat(e.target.value))}
+        />
+        <Button onClick={handleAddRevenue}>Add Revenue</Button>
+      </div>
+      <div className="mt-4">
+        <ul>
+          {revenues.map((revenue, index) => (
+            <li key={index} className="flex justify-between items-center py-2 border-b">
+              <span>{revenue.category}</span>
+              <span>₹{revenue.amount}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Card>
   );
 }
