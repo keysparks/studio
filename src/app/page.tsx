@@ -1,29 +1,21 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
   PieChart,
   Pie,
   Cell,
   ResponsiveContainer,
+  Tooltip,
+  Legend,
 } from 'recharts';
 import {Separator} from '@/components/ui/separator';
-import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/hooks/use-toast';
 import {getSpendingInsights} from '@/ai/flows/spending-insights';
-import {Slider} from '@/components/ui/slider';
-import {Home, PlusCircle} from "lucide-react";
 import Link from "next/link";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
@@ -37,38 +29,11 @@ const initialExpenses = [
 ];
 
 function DashboardOverview() {
-  const [income, setIncome] = useState(5000);
   const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
   const [expenses, setExpenses] = useState(initialExpenses);
-  const [category, setCategory] = useState('');
-  const [amount, setAmount] = useState(0);
   const [budgetGoals, setBudgetGoals] = useState([{category: 'Groceries', amount: 400}]);
   const [insights, setInsights] = useState<string[]>([]);
   const {toast} = useToast();
-
-  const handleAddExpense = () => {
-    if (category && amount > 0) {
-      setExpenses([...expenses, {category, amount: parseFloat(amount.toString())}]);
-      setCategory('');
-      setAmount(0);
-    }
-  };
-
-  const handleAddRevenue = () => {
-    if (category && amount > 0) {
-      setRevenues([...revenues, {category, amount: parseFloat(amount.toString())}]);
-      setCategory('');
-      setAmount(0);
-    }
-  };
-
-  const handleAddBudgetGoal = () => {
-    if (category && amount > 0) {
-      setBudgetGoals([...budgetGoals, {category, amount: parseFloat(amount.toString())}]);
-      setCategory('');
-      setAmount(0);
-    }
-  };
 
   const generateInsights = async () => {
     try {
@@ -110,7 +75,6 @@ function DashboardOverview() {
        <h1 className="text-2xl font-bold text-center">BudgetWise</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Dashboard Overview</CardTitle>
           <CardDescription>A summary of your financial status.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -137,11 +101,9 @@ function DashboardOverview() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle>Spending Chart</CardTitle>
-            <CardDescription>Visualize your expenses.</CardDescription>
-          </CardHeader>
-          <CardContent>
+          
+          
+          
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -162,7 +124,7 @@ function DashboardOverview() {
                 <Legend/>
               </PieChart>
             </ResponsiveContainer>
-          </CardContent>
+          
           <CardContent>
             <div className="flex justify-around">
               <Button asChild>
@@ -176,11 +138,9 @@ function DashboardOverview() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>AI Spending Insights</CardTitle>
-            <CardDescription>Get personalized insights based on your spending patterns.</CardDescription>
-          </CardHeader>
-          <CardContent>
+          
+          
+          
             <Button onClick={generateInsights}>Generate Insights</Button>
             {insights.length > 0 && (
               <ul className="mt-4">
@@ -189,7 +149,7 @@ function DashboardOverview() {
                 ))}
               </ul>
             )}
-          </CardContent>
+          
         </Card>
       </div>
     </div>
@@ -204,6 +164,7 @@ export default function DashboardPage() {
     
   );
 }
+
 
 
 
