@@ -210,17 +210,10 @@ function DashboardOverview() {
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col h-full">
-      <div className="relative flex items-center justify-between p-4 bg-background border-b">
-        <span className="font-bold text-lg">BudgetWise</span>
-        <div className="absolute top-2 right-4">
-          <Avatar>
-            <AvatarImage src="https://picsum.photos/50/50" alt="User Avatar"/>
-            <AvatarFallback>FS</AvatarFallback>
-          </Avatar>
-        </div>
-      </div>
+    
+      
       <DashboardOverview/>
-    </div>
+    
   );
 }
+

@@ -36,23 +36,13 @@ export default function RevenuesPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="relative flex items-center justify-between p-4 bg-background border-b">
-        <span className="font-bold text-lg">BudgetWise</span>
-        <div className="absolute top-2 right-4">
-          <Avatar>
-            <AvatarImage src="https://picsum.photos/50/50" alt="User Avatar"/>
-            <AvatarFallback>FS</AvatarFallback>
-          </Avatar>
-        </div>
-      </div>
-      <div className="container mx-auto p-4 flex flex-col gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenues</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-2">
+    
+      
+      
+      
+        
+          
+            
               <Label>Category</Label>
               <Input
                 type="text"
@@ -68,18 +58,19 @@ export default function RevenuesPage() {
                 onChange={e => setAmount(parseFloat(e.target.value))}
               />
               <Button onClick={handleAddRevenue}>Add Revenue</Button>
-            </div>
-            <ul className="mt-4">
+            
+            
               {revenues.map((revenue, index) => (
                 <li key={index} className="flex justify-between items-center py-2 border-b">
                   <span>{revenue.category}</span>
                   <span>₹{revenue.amount}</span>
                 </li>
               ))}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+            
+          
+        
+      
+    
   );
 }
+
