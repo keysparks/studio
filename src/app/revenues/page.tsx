@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import {Home, PlusCircle} from "lucide-react";
 import Link from "next/link";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 export default function RevenuesPage() {
   const [revenues, setRevenues] = useState([{category: 'Salary', amount: 5000}]);
@@ -35,40 +36,16 @@ export default function RevenuesPage() {
   };
 
   return (
-    <div className="flex h-full">
-      <Sidebar>
-        <SidebarHeader>
-          <SidebarTrigger/>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href="/" className="w-full">
-                <SidebarMenuButton>
-                  <Home className="mr-2 h-4 w-4"/>
-                  <span>Dashboard</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/revenues" className="w-full">
-                <SidebarMenuButton>
-                  <PlusCircle className="mr-2 h-4 w-4"/>
-                  <span>Add Revenue</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/expenses" className="w-full">
-                <SidebarMenuButton>
-                  <PlusCircle className="mr-2 h-4 w-4"/>
-                  <span>Add Expense</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
+    <div className="flex flex-col h-full">
+      <div className="relative flex items-center justify-between p-4 bg-background border-b">
+        <span className="font-bold text-lg">BudgetWise</span>
+        <div className="absolute top-2 right-4">
+          <Avatar>
+            <AvatarImage src="https://picsum.photos/50/50" alt="User Avatar"/>
+            <AvatarFallback>FS</AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
       <div className="container mx-auto p-4 flex flex-col gap-4">
         <Card>
           <CardHeader>
