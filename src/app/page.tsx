@@ -159,7 +159,7 @@ function DashboardOverview() {
             <div className="flex justify-around">
               <Dialog open={openRevenueDialog} onOpenChange={setOpenRevenueDialog}>
                 <DialogTrigger asChild>
-                  <Button variant="outline">Add Revenue</Button>
+                  <Button variant="primary">Add Revenue</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -223,7 +223,7 @@ function DashboardOverview() {
 
               <Dialog open={openExpenseDialog} onOpenChange={setOpenExpenseDialog}>
                 <DialogTrigger asChild>
-                  <Button variant="outline">Add Expense</Button>
+                  <Button variant="primary">Add Expense</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
