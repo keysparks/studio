@@ -16,7 +16,7 @@ import {
 import {Separator} from '@/components/ui/separator';
 import {useToast} from '@/hooks/use-toast';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import {Calendar} from "@/components/ui/calendar";
+import {DatePicker} from "@/components/ui/date-picker";
 import {format} from "date-fns";
 import {cn} from "@/lib/utils";
 
@@ -195,9 +195,8 @@ function DashboardOverview() {
                         <Label htmlFor="revenue-date" className="text-right">
                           Date
                         </Label>
-                        <Calendar
+                        <DatePicker
                           id="revenue-date"
-                          mode="single"
                           selected={revenueDate}
                           onSelect={setRevenueDate}
                           className="col-span-3"
@@ -260,9 +259,8 @@ function DashboardOverview() {
                       <Label htmlFor="expense-date" className="text-right">
                         Date
                       </Label>
-                      <Calendar
+                      <DatePicker
                         id="expense-date"
-                        mode="single"
                         selected={expenseDate}
                         onSelect={setExpenseDate}
                         className="col-span-3"
