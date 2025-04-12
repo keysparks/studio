@@ -178,7 +178,7 @@ export default function Home() {
               {expenses.map((expense, index) => (
                 <li key={index} className="flex justify-between items-center py-2 border-b">
                   <span>{expense.category}</span>
-                  <span>${expense.amount}</span>
+                  <span>₹{expense.amount}</span>
                 </li>
               ))}
             </ul>
@@ -213,7 +213,7 @@ export default function Home() {
             {budgetGoals.map((goal, index) => (
               <li key={index} className="flex justify-between items-center py-2 border-b">
                 <span>{goal.category}</span>
-                <span>${goal.amount}</span>
+                <span>₹{goal.amount}</span>
               </li>
             ))}
           </ul>
@@ -239,3 +239,4 @@ export default function Home() {
     </div>
   );
 }
+
