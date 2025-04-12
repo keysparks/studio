@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
@@ -41,7 +41,7 @@ export default function ExpensesPage() {
               <Input
                 type="number"
                 placeholder="e.g., 50"
-                value={amount}
+                value={amount.toString()}
                 onChange={e => setAmount(parseFloat(e.target.value))}
               />
               <Button onClick={handleAddExpense}>Add Expense</Button>
@@ -60,7 +60,3 @@ export default function ExpensesPage() {
     
   );
 }
-
-
-
-
