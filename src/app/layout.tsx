@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="flex items-center justify-between p-4 bg-background border-b">
-          <span className="font-bold text-lg">Firebase Studio App</span>
+          <span className="font-bold text-lg">BudgetWise</span>
           <Avatar>
             <AvatarImage src="https://picsum.photos/50/50" alt="User Avatar"/>
             <AvatarFallback>FS</AvatarFallback>
@@ -38,3 +38,4 @@ export default function RootLayout({
     </html>
   );
 }
+
